@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UBSWIFT GLOBAL LTD — Invoice</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#14213D;
+    --paper:#F7F5F0;
+    --brass:#B08D57;
+    --slate:#4A5568;
+    --rule:#D8D2C4;
+    --white:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#E9E5DC;
+    font-family:'IBM Plex Sans', sans-serif;
+    color:var(--ink);
+    padding:32px 16px 80px;
+  }
+
+  .toolbar{
+    max-width:820px;
+    margin:0 auto 20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .toolbar .hint{
+    font-size:13px;
+    color:var(--slate);
+  }
+  .toolbar button{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:10px 18px;
+    border-radius:3px;
+    border:1px solid var(--ink);
+    background:var(--ink);
+    color:var(--white);
+    cursor:pointer;
+  }
+  .toolbar button.secondary{
+    background:transparent;
+    color:var(--ink);
+  }
+
+  .sheet{
+    max-width:820px;
+    margin:0 auto;
+    background:var(--paper);
+    padding:56px 64px;
+    box-shadow:0 1px 3px rgba(0,0,0,.15), 0 12px 32px rgba(0,0,0,.12);
+  }
+
+  .head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:28px;
+    margin-bottom:32px;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-size:28px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    outline:none;
+  }
+  .brand-sub{
+    font-size:13px;
+    color:var(--slate);
+    margin-top:6px;
+    line-height:1.5;
+  }
+  .brand-sub span{outline:none; display:inline-block; min-width:20px;}
+
+  .meta{
+    text-align:right;
+    font-size:13px;
+    color:var(--slate);
+    line-height:1.8;
+  }
+  .meta .doctype{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    color:var(--ink);
+    font-weight:500;
+    margin-bottom:8px;
+  }
+  .meta-row{display:flex; gap:8px; justify-content:flex-end;}
+  .meta-row .label{color:var(--slate); min-width:90px; text-align:right;}
+  .meta-row .val{outline:none; min-width:90px; text-align:right; border-bottom:1px dotted var(--rule);}
+
+  .parties{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    margin-bottom:36px;
+  }
+  .party{flex:1;}
+  .party .eyebrow{
+    font-size:11px;
+    color:var(--brass);
+    font-weight:600;
+    letter-spacing:0.5px;
+    margin-bottom:8px;
+  }
+  .party .name{
+    font-size:16px;
+    font-weight:600;
+    outline:none;
+    margin-bottom:4px;
+  }
+  .party .addr{
+    font-size:13px;
+    color:var(--slate);
+    outline:none;
+    line-height:1.6;
+    min-height:20px;
+  }
+
+  table.items{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:8px;
+  }
+  table.items th{
+    text-align:left;
+    font-size:11px;
+    text-transform:none;
+    color:var(--slate);
+    font-weight:600;
+    padding:0 0 10px;
+    border-bottom:1.5px solid var(--ink);
+  }
+  table.items th.num, table.items td.num{text-align:right;}
+  table.items td{
+    padding:14px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:14px;
+    vertical-align:top;
+  }
+  table.items td.desc{outline:none; width:55%;}
+  table.items td.qty, table.items td.rate{outline:none; width:12%;}
+  table.items td.amt{width:16%; font-weight:600;}
+  .rowbtns{margin:10px 0 28px;}
+  .rowbtns button{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12px;
+    background:transparent;
+    border:1px solid var(--rule);
+    padding:6px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    color:var(--slate);
+  }
+
+  .totals{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:40px;
+  }
+  .totals-box{width:260px;}
+  .totals-row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    font-size:14px;
+  }
+  .totals-row.grand{
+    border-top:2px solid var(--ink);
+    margin-top:4px;
+    padding-top:14px;
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    font-weight:600;
+  }
+  .totals-row .val{outline:none; text-align:right; min-width:70px;}
+
+  .paysection{
+    background:var(--white);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:24px 28px;
+    margin-bottom:32px;
+  }
+  .paysection .eyebrow{
+    font-size:11px;
+    color:var(--brass);
+    font-weight:600;
+    letter-spacing:0.5px;
+    margin-bottom:14px;
+  }
+  .payregion{
+    margin-bottom:14px;
+    font-size:13px;
+  }
+  .payregion select{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    padding:6px 10px;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .payfields{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 24px;
+    margin-top:16px;
+  }
+  .payfield{font-size:13px;}
+  .payfield .flabel{
+    font-size:11px;
+    color:var(--slate);
+    margin-bottom:4px;
+  }
+  .payfield .fval{
+    outline:none;
+    border-bottom:1px dotted var(--rule);
+    padding-bottom:3px;
+    font-weight:500;
+  }
+
+  .note{
+    font-size:12px;
+    color:var(--slate);
+    outline:none;
+    line-height:1.6;
+    border-top:1px solid var(--rule);
+    padding-top:20px;
+  }
+
+  [contenteditable]:hover{background:rgba(176,141,87,0.08);}
+  [contenteditable]:focus{background:rgba(176,141,87,0.14);}
+
+  @media print{
+    body{background:var(--white); padding:0;}
+    .toolbar{display:none;}
+    .sheet{box-shadow:none; padding:36px 44px; max-width:none;}
+    [contenteditable]:hover, [contenteditable]:focus{background:transparent;}
+    .rowbtns{display:none;}
+    select{display:none;}
+    .payregion .selected-label{display:inline;}
+  }
+  .selected-label{display:none; font-weight:600;}
+</style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div class="hint">Click any text to edit. Choose a payment region below to switch fields. Then print to save as PDF.</div>
+    <div>
+      <button class="secondary" onclick="addRow()">+ Add line item</button>
+      <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="head">
+      <div>
+        <div class="brand" contenteditable="true">UBSWIFT GLOBAL LTD</div>
+        <div class="brand-sub">
+          <span contenteditable="true">Operational Audits &amp; Systems Implementation</span><br>
+          <span contenteditable="true">hello@ubswiftglobal.com</span> · <span contenteditable="true">+234 000 000 0000</span>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="doctype">Invoice</div>
+        <div class="meta-row"><span class="label">Invoice No.</span><span class="val" contenteditable="true">UB-0001</span></div>
+        <div class="meta-row"><span class="label">Date</span><span class="val" contenteditable="true">14 Sep 2026</span></div>
+        <div class="meta-row"><span class="label">Due</span><span class="val" contenteditable="true">On receipt</span></div>
+      </div>
+    </div>
+
+    <div class="parties">
+      <div class="party">
+        <div class="eyebrow">BILLED TO</div>
+        <div class="name" contenteditable="true">Client Business Name</div>
+        <div class="addr" contenteditable="true">Client contact name<br>Client address / country</div>
+      </div>
+      <div class="party" style="text-align:right;">
+        <div class="eyebrow">FROM</div>
+        <div class="name" contenteditable="true">UBSWIFT GLOBAL LTD</div>
+      </div>
+    </div>
+
+    <table class="items" id="itemsTable">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th class="num">Qty</th>
+          <th class="num">Rate</th>
+          <th class="num">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody">
+        <tr>
+          <td class="desc" contenteditable="true">Money Leak Check — same-day operational audit</td>
+          <td class="qty num" contenteditable="true">1</td>
+          <td class="rate num" contenteditable="true">£149.00</td>
+          <td class="amt num" contenteditable="true">£149.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="totals-box">
+        <div class="totals-row"><span>Subtotal</span><span class="val" contenteditable="true">£149.00</span></div>
+        <div class="totals-row grand"><span>Total Due</span><span class="val" contenteditable="true">£149.00</span></div>
+      </div>
+    </div>
+
+    <div class="paysection">
+      <div class="eyebrow">PAYMENT DETAILS</div>
+      <div class="payregion">
+        Region:
+        <select id="regionSelect" onchange="switchRegion()">
+          <option value="uk">United Kingdom (Faster Payments)</option>
+          <option value="us">United States (ACH / Wire)</option>
+          <option value="eu">Europe (SEPA)</option>
+          <option value="other">Other / International (SWIFT)</option>
+        </select>
+      </div>
+      <div class="payfields" id="payFields">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="note" contenteditable="true">
+      Thank you for your business. Payment confirms your Money Leak Check session — findings delivered same day.
+    </div>
+  </div>
+
+<script>
+  const regionFields = {
+    uk: [
+      {label:"Account Name", val:"UBSWIFT GLOBAL LTD"},
+      {label:"Bank Name", val:"[Your UK bank / Grey / Wise]"},
+      {label:"Account Number", val:"00000000"},
+      {label:"Sort Code", val:"00-00-00"},
+    ],
+    us: [
+      {label:"Account Name", val:"UBSWIFT GLOBAL LTD"},
+      {label:"Bank Name", val:"[Your US bank / Grey / Wise]"},
+      {label:"Account Number", val:"000000000"},
+      {label:"Routing Number (ACH)", val:"000000000"},
+    ],
+    eu: [
+      {label:"Account Name", val:"UBSWIFT GLOBAL LTD"},
+      {label:"Bank Name", val:"[Your EU bank / Wise]"},
+      {label:"IBAN", val:"XX00 0000 0000 0000 0000 00"},
+      {label:"BIC / SWIFT", val:"XXXXXXXX"},
+    ],
+    other: [
+      {label:"Account Name", val:"UBSWIFT GLOBAL LTD"},
+      {label:"Bank Name", val:"[Bank name]"},
+      {label:"Account Number / IBAN", val:"[Account number]"},
+      {label:"SWIFT / BIC", val:"[SWIFT code]"},
+    ]
+  };
+
+  function renderFields(region){
+    const fields = regionFields[region];
+    const container = document.getElementById('payFields');
+    container.innerHTML = '';
+    fields.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'payfield';
+      div.innerHTML = `<div class="flabel">${f.label}</div><div class="fval" contenteditable="true">${f.val}</div>`;
+      container.appendChild(div);
+    });
+  }
+
+  function switchRegion(){
+    const region = document.getElementById('regionSelect').value;
+    renderFields(region);
+  }
+
+  function addRow(){
+    const tbody = document.getElementById('itemsBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="desc" contenteditable="true">New line item</td>
+      <td class="qty num" contenteditable="true">1</td>
+      <td class="rate num" contenteditable="true">£0.00</td>
+      <td class="amt num" contenteditable="true">£0.00</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  renderFields('uk');
+</script>
+
+</body>
+</html>
